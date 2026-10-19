@@ -1,17 +1,10 @@
-# puzzle15
+# Puzzle Microdeslizante 15 piezas
 
-A new Flutter project.
+Armando Suarez
+Adriana Julian
 
-## Getting Started
+(Tenemos un problema con flutter y la ubicacion de los archivos que no esta dejando generar el codigo web)
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
