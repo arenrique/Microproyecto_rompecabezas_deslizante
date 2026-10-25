@@ -1,0 +1,76 @@
+name: Construir y desplegar en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  construir:
+    name: Analizar, probar y compilar
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Mostrar versiones
+        run: flutter --version
+
+      - name: Instalar dependencias
+        run: flutter pub get
+
+      - name: Analizar el código
+        run: flutter analyze --no-fatal-infos
+
+      - name: Ejecutar las pruebas
+        run: flutter test
+
+      - name: Compilar Flutter Web
+        run: >
+          flutter build web --release
+          --base-href "/${{ github.event.repository.name }}/"
+
+      - name: Verificar que la aplicación sigue siendo una PWA
+        run: >
+          bash scripts/verificar_pwa.sh build/web
+          "/${{ github.event.repository.name }}/"
+
+      - name: Configurar GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+
+      - name: Subir el sitio como artefacto
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  desplegar:
+    name: Desplegar en GitHub Pages
+    needs: construir
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
+        id: despliegue
+        uses: actions/deploy-pages@v4
